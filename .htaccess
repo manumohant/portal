@@ -1,0 +1,20 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L] 
+
+#DirectoryIndex index.php
+#<IfModule mod_rewrite.c>
+
+#    RewriteEngine On
+
+    
+#    RewriteCond %{REQUEST_FILENAME} !-f
+#    RewriteCond %{REQUEST_FILENAME} !-d
+#    RewriteRule ^(.*)$ /^capmscoopstakenaga.com/index.php?q=$1 [L,QSA]
+#</IfModule>
+
+#RewriteCond %{HTTP_HOST} ^capmscoopstakenaga\.com
+#RewriteRule ^(.*)$ http://192.168.1.2/capm-scoopstake/$1 [R=permanent,L]
+
+
