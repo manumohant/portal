@@ -36,4 +36,8 @@ class Dashboard extends CI_Controller {
 		$result["metadata"] = $this->MetaDataModel->getAllMetaData();
 		$this->load->view('content/newmetadata',$result);
 	}
+	public function viewMetaData()
+	{
+		$this->load->view('content/viewmetadata');
+	}
 }

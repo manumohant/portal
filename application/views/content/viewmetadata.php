@@ -1,6 +1,4 @@
-<script>
-  var metadata = <?php echo $metadata?>;
-</script>
+
 <section>
   
   <div class="leftpanel">
@@ -325,166 +323,50 @@
       </div>
     </div>
     
-    <div class="contentpanel" ng-init="initMetaData()">
-      <div class="col-md-12">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="panel-btns">
-              <a href="#" class="panel-close">&times;</a>
-              <a href="#" class="minimize">&minus;</a>
-            </div>
-            <h4 class="panel-title">New MetaData</h4>
-            <p>Enter new meta data details using this wizard.</p>
+    <div class="contentpanel">
+      <!-- content goes here... -->
+
+
+
+       <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-btns">
+            <a href="#" class="panel-close">&times;</a>
+            <a href="#" class="minimize">&minus;</a>
           </div>
-          <div class="panel-body panel-body-nopadding">
-
-            <!-- BASIC WIZARD -->
-            <div id="progressWizard" class="basic-wizard">
-
-              <ul class="nav nav-pills nav-justified nav-disabled-click">
-                <li>
-                  <a href="#ptab1" data-toggle="tab">
-                    <span>Step 1:</span> App Info
-                  </a>
+          <h4 class="panel-title">{{value.appname}}/{{value.appId}}</h4>
+        </div><!-- panel-heading -->
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-8">
+              <h5 class="subtitle">{{value.module}}</h5>
+              <p>{{value.desc}}</p>
+              <ul>
+                <li>Method:{{value.Api.method}}</li>
+                <li>ACL:{{value.Api.access_ctrl_level}}</li>
+                <li>Error Codes:
+                    <ul ng-repeat="ec in value.Api.error_code">
+                      <li>Code:{{ec.code}},Desc:{{ec.desc}}</li>
+                    </ul>
                 </li>
-                <li>
-                  <a href="#ptab2" data-toggle="tab">
-                    <span>Step 2:</span> Module Info
-                  </a>
+                <li>URL:{{value.Api.url}}</li>
+                <li>Required Fields
+                  <ul ng-repeat="rf in value.Api.req_fields">
+                    <li>{{rf}}</li>
+                  </ul>
                 </li>
-                <li>
-                  <a href="#ptab3" data-toggle="tab">
-                    <span>Step 3:</span> API Info
-                  </a>
+                <li>Fields Mapping 
+                    <ul ng-repeat="map in value.Api.mapping">
+                    <li>{{map}}</li>
+                  </ul>
                 </li>
               </ul>
-
-              <div class="tab-content">
-
-                <div class="progress progress-striped active">
-                  <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-
-                <div class="tab-pane" id="ptab1">
-                  <form class="form">
-                    <div class="form-group">
-                      <label class="col-sm-4">App Name</label>
-                      <div class="col-sm-8">
-                        <input list="appname"  type="text" ng-model="metadata.appname" class="form-control" />
-                        <datalist id="appname">
-                          <option ng-repeat="meta in MetaData" value="{{meta.appname}}">
-                        </datalist>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-4">App ID</label>
-                      <div class="col-sm-8">
-                        <input list="appid" type="text" ng-model="metadata.appId" class="form-control" />
-                        <datalist id="appid" >
-                          <option ng-repeat="meta in MetaData " value="{{meta.appId}}">
-                        </datalist>
-                      </div>
-                    </div>
-
-                    
-
-                  </form>
-                </div>
-                <div class="tab-pane" id="ptab2">
-                  <form class="form">
-                    <div class="form-group">
-                      <label class="col-sm-4">Module Name</label>
-                      <div class="col-sm-5">
-                        <input list="module" type="text" ng-model="metadata.modules.name" class="form-control" />
-                        <datalist id="module" ng-repeat="module in modules">
-                          <option ng-repeat="(key,value) in module " value="{{key}}">
-                        </datalist>
-                      </div>
-                    </div>
-
-
-                  </form>
-                </div>
-                <div class="tab-pane" id="ptab3">
-                  <form class="form">
-                    <div class="form-group">
-                      <label class="col-sm-4">Method</label>
-                      <div class="col-sm-8">
-                        <input type="text" ng-model="metadata.modules.apis.method" class="form-control" ng-init="metadata.modules.apis.method='Get'"/>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-4">Description</label>
-                      <div class="col-sm-8">
-                        <input type="text" ng-model="metadata.modules.apis.desc" class="form-control" />
-                      </div>
-
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-4">Access Control Level</label>
-                      <div class="col-sm-8">
-
-                          <select class="form-control" ng-model="metadata.modules.apis.access_ctrl_level">
-                            <option value="">Open</option>
-                            <option value="">Admin</option>
-                          </select>
-
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-4">Required Fields</label>
-                      <div class="col-sm-8">
-
-                        <input ng-model="metadata.modules.apis.req_fields" id="tags" class="form-control" />
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <label class="col-sm-4">Field Mapping</label>
-                      <div class="col-sm-8">
-
-                        <input ng-model="metadata.modules.apis.mapping" id="tags2" class="form-control" />
-                      </div>
-                    </div>
-                    
-                    <div class="form-group">
-                      <label class="col-sm-4">URL</label>
-                      <div class="col-sm-8">
-                        <input type="text" ng-model="metadata.modules.apis.url" class="form-control" />
-                        <br/>
-                        <a class="btn btn-primary"  id="growl-success" ng-click="saveMetaData()">Save Data</a>
-                      </div>
-                    </div>
-                    
-                  </form>
-                  
-                </div>
-
-
-              </div>
-              <!-- tab-content -->
-
-              <ul class="pager wizard">
-                <li class="previous">
-                  <a href="javascript:void(0)">Previous</a>
-                </li>
-                <li class="next">
-                  <a href="javascript:void(0)">Next</a>
-                </li>
-              </ul>
-
-            </div>
-            <!-- #basicWizard -->
-
-          </div>
-          <!-- panel-body -->
-        </div>
-        <!-- panel -->
-      </div>
+            </div><!-- col-md-4 -->
+            
+           
+          </div><!-- row -->
+        </div><!-- panel-body -->
+      </div><!-- panel -->
     </div>
     
   </div><!-- mainpanel -->
@@ -779,49 +661,3 @@
   </div><!-- rightpanel -->
   
 </section>
-<script>
-  jQuery(document).ready(function(){
-
-  jQuery('#tags').tagsInput({width:'auto',placeholder:'new tags'});
-  jQuery('#tags2').tagsInput({width:'auto'});
-
-  // Basic Wizard
-  jQuery('#basicWizard').bootstrapWizard();
-
-  // Progress Wizard
-  $('#progressWizard').bootstrapWizard({
-  'nextSelector': '.next',
-  'previousSelector': '.previous',
-  onNext: function(tab, navigation, index) {
-  var $total = navigation.find('li').length;
-  var $current = index+1;
-  var $percent = ($current/$total) * 100;
-  jQuery('#progressWizard').find('.progress-bar').css('width', $percent+'%');
-  },
-  onPrevious: function(tab, navigation, index) {
-  var $total = navigation.find('li').length;
-  var $current = index+1;
-  var $percent = ($current/$total) * 100;
-  jQuery('#progressWizard').find('.progress-bar').css('width', $percent+'%');
-  },
-  onTabShow: function(tab, navigation, index) {
-  var $total = navigation.find('li').length;
-  var $current = index+1;
-  var $percent = ($current/$total) * 100;
-  jQuery('#progressWizard').find('.progress-bar').css('width', $percent+'%');
-  }
-  });
-
-  // Disabled Tab Click Wizard
-  jQuery('#progressWizard').bootstrapWizard({
-  tabClass: 'nav nav-pills nav-justified nav-disabled-click',
-  onTabClick: function(tab, navigation, index) {
-  return false;
-  }
-  });
-
-
-
-
-  });
-</script>

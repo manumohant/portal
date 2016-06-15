@@ -334,15 +334,24 @@
           <div class="clearfix mb30" ng-init="initMetaData()"></div>
           <h5 class="subtitle mb5">Meta Data with all details </h5>
           <p>You can view/edit/delete Meta Data about your applications here..</p>
-          <a class="btn btn-primary" href="#newMetaData">Add new</a>
-          <br />
-          <div class="table-responsive"  ng-repeat="meta in MetaData">
+          <a class="btn btn-primary pull-right" href="#newMetaData">Add new</a>
+          <div class="form-group">
+            <!-- <label class="col-sm-4">Select an Application</label> -->
+            <div class="col-sm-4">
+
+                <select class="form-control" ng-model="selectedApp" ng-options="meta as meta.appname for meta in MetaData track by meta.appId" ng-change="getAppMetaData();">
+                </select>
+
+            </div>
+          </div>
+          <div class="table-responsive"  ng-repeat="meta in DisplayData">
             <table class="table" id="table2">
               <thead>
                 <tr>
+                  <th></th>
                   <th>App Name</th>
                   <th>AppID</th>
-                  <th>Module(s)</th>
+                  <th>Module</th>
                   <th>Method</th>
                   <th>ApiDesc</th>
                   <th>ACL</th>
@@ -351,21 +360,28 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody  ng-repeat="module in meta.modules">
+              <tbody  ng-repeat="(key,module) in meta.modules">
                 <tr class="odd gradeX" ng-repeat="api in module.apis">
+                  <td class="table-action">
+                    <a href="#/viewMetaData/{{api.desc}}/{{key}}/{{meta.appId}}"><i class="fa fa-list-alt"></i></a>
+                  </td>
                   <td>{{meta.appname}}</td>
                   <td>{{meta.appId}}</td>
-                  <td>{{module.name}}</td>
+                  <td>{{key}}</td>
                   <td class="center">{{api.method}}</td>
                   <td class="center">{{api.desc}}</td>
                   <td class="center">{{api.access_ctrl_level}}</td>
                   <td class="center">{{getReqFieldString(api.req_fields)}}</td>
                   <td class="center">{{api.url}}</td>
-                  <td></td>
+                  <td class="table-action">
+                    <a href="#/newMetaData/{{api.desc}}/{{key}}/{{meta.appId}}"><i class="fa fa-pencil"></i></a>
+                    <a href="" class="delete-row"><i class="fa fa-trash-o" ng-click="deleteMeta(api.desc,key,meta.appId);"></i></a>
+                </td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <div class="table-responsive" ng-if="!DisplayData">Select an App to view details</div>
           <!-- table-responsive -->
 
         </div>

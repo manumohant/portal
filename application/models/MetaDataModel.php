@@ -32,28 +32,21 @@
 		$desc =$metadata["modules"]["apis"]["desc"];
 		$url =$metadata["modules"]["apis"]["url"];
 		$req_fields =explode(",",$metadata["modules"]["apis"]["req_fields"]);
+		$mapping =explode(",",$metadata["modules"]["apis"]["mapping"]);
 		if($appname!='' && $appId!='' && $moduleName!='' && $method!='' && $url!='')
 		{
-			$searchCond = array('$and'=>array(array("appname"=>$appname),array("appId"=>$appId)));
-			$searchData = array('name'=>$moduleName);
-			$searchComand = array('$push'=>array('modules'=>$searchData));
+			
 
-
-			$data = array("method"=>$method,"desc"=>$desc,"access_ctrl_level"=>"admin","req_fields"=>$req_fields,"url"=>$url);
-			$condition = array('$and'=>array(array('modules.name'=>$moduleName),array("appname"=>$appname),array("appId"=>$appId)));
-
-			$pushCommand = array('$push'=>array('modules.$.apis'=>$data));
+			$data = array("method"=>$method,"desc"=>$desc,"access_ctrl_level"=>"admin","req_fields"=>$req_fields,"url"=>$url,"mapping"=>$mapping);
+			$condition = array('$and'=>array(array("appname"=>$appname),array("appId"=>$appId)));
+			$setCommand = array('$set'=>array('modules.'.$moduleName.'.apis.'.$desc=>$data));
 			$upsert = array('upsert'=>true);
 
-			$this->mongo_db->db->MetaData->update(
-			   $searchCond,
-			   $searchComand,
-			   $upsert
-			);
+			
 
 			$this->mongo_db->db->MetaData->update(
 			   $condition,
-			   $pushCommand,
+			   $setCommand,
 			   $upsert
 			);
 			return true;
@@ -64,27 +57,51 @@
 		}
 
 	}
+	public function getAppDetails($appId)
+	{
+		$condition = array("appId"=>$appId);
+		$result =  $this->mongo_db->db->MetaData->find($condition);
+		$resultArray = array();
+		foreach($result as $data) 
+		{
+			array_push($resultArray,$data);
+		}
+		return json_encode($resultArray);
+	}
+	public function getSingle($desc,$module,$appId)
+	{
+		$condition = array("modules.".$module.".apis.".$desc=>array('$exists'=>true));
+		$result =  $this->mongo_db->db->MetaData->find($condition);
+		$resultArray = array();
+		foreach($result as $data) 
+		{
+			array_push($resultArray,$data);
+		}
+		return json_encode($resultArray);
+	}
+	public function deleteSingle($desc,$module,$appId)
+	{
+			$condition = array("appId"=>$appId);
+			$setCommand = array('$unset'=>array('modules.'.$module.'.apis.'.$desc=>''));
+			
+
+			$this->mongo_db->db->MetaData->update(
+			   $condition,
+			   $setCommand
+			);
+		$this->getAppDetails($appId);
+	}
  }
 
 
 
-// db.MetaData.findAndModify({query: { $and:[{"appname":"jayesh"},{"appId":"2546"}] },
-// update:{$push:{"modules":{"name":"jayeshModule3"}}},
-// upsert:true
-// })
 
-
-
-// db.MetaData.findAndModify({query: { $and:[{"modules.name":"jayeshModule3"},{"appname":"jayesh"},{"appId":"2546"}] },
-//     update: {$push: {
-//        "modules.$.apis": {
-// 		"method":"Get","desc":"asdf","access_ctrl_level":"admin","req_fields":["aaa"
-
-//                ],"url":"http://jayesh2.com"
-//        }
-//      }},
-//     upsert: true
-// })
-
-
-
+// db.MetaData.findAndModify({
+//         query: {"appname":"erp","appId":"e2345"} ,
+//         update: {
+//                $set:{"modules.workorder.apis.get single wo details": 
+//                     {"method":"post",
+//                      "access_ctrl_level":"admin","req_fields":["aaa"],
+//                      "url":"url"}}},
+//         upsert: true
+// })  
